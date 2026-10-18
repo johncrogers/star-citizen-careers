@@ -5,6 +5,9 @@
     Character, renderPendingBanner, progress, careers, meta,
   } = window.Careers;
   const $ = (id) => document.getElementById(id);
+  // Names link to their entry in the glossary app (it finds the entry by name).
+  const glossaryHref = ((window.SITE || {}).links || []).find((l) => l.id === "glossary")?.href;
+  const lookUp = (name) => (glossaryHref && name ? `<a class="lookup" href="${esc(glossaryHref)}#find/${encodeURIComponent(name)}" title="Look up ${esc(name)} in the glossary">${esc(name)}</a>` : esc(name));
   let world = null;
   let view = { page: "character", career: null };
 
@@ -108,7 +111,7 @@
       const l = world.ladders.get(k);
       const cur = Character.rank(k);
       const names = [...l.names].sort((a, b) => a[0] - b[0]);
-      return `<tr><td>${esc(l.by)}${l.track && !["Standing", ""].includes(l.track) ? ` <small class="muted">${esc(l.track)}</small>` : ""}</td>
+      return `<tr><td>${lookUp(l.by)}${l.track && !["Standing", ""].includes(l.track) ? ` <small class="muted">${esc(l.track)}</small>` : ""}</td>
         <td><select data-rank="${esc(k)}" aria-label="My rank with ${esc(l.by)}">
           <option value=""${cur == null ? " selected" : ""}>Not set</option>
           ${names.map(([i, n]) => `<option value="${i}"${cur === i ? " selected" : ""}>${i} · ${esc(n)}</option>`).join("")}
